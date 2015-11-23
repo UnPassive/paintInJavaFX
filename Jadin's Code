@@ -1,0 +1,193 @@
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+
+
+
+public class PaintProgram extends Application {
+	public boolean filledOval;
+	public boolean oval;
+	public boolean filledRectangle;
+	public boolean rectangle;
+	public boolean line;
+
+	public double primX, primY, finX, finY;
+
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+
+
+
+		primaryStage.setTitle("Hello World!");
+
+		//create buttons
+		Button btn1 = new Button("Filled Oval");
+		Button btn2 = new Button("Oval");
+		Button btn3 = new Button("Filled Rectangle");
+		Button btn4 = new Button("Rectangle");
+		Button btn5 = new Button("Line");
+		Button btn6 = new Button("Clear");
+
+
+		//create canvas
+		Canvas canvas = new Canvas(1000, 700);
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		//drawShape(gc); //this happens on a mouse event
+
+
+		//handle what buttons do
+		btn1.setOnAction(e -> {
+			filledOval = true;  
+			oval = false;
+			filledRectangle = false;
+			rectangle = false;
+			line = false;
+		});
+		btn2.setOnAction(e ->{
+			filledOval = false;  
+			oval = true;
+			filledRectangle = false;
+			rectangle = false;
+			line = false;
+
+		});
+		btn3.setOnAction(e ->{
+			filledOval = false;  
+			oval = false;
+			filledRectangle = true;
+			rectangle = false;
+			line = false;
+		});
+		btn4.setOnAction(e ->{
+			filledOval = false;  
+			oval = false;
+			filledRectangle = false;
+			rectangle = true;
+			line = false;
+		});
+		btn5.setOnAction(e ->{
+			filledOval = false;  
+			oval = false;
+			filledRectangle = false;
+			rectangle = false;
+			line = true;
+		});
+		btn6.setOnAction(e -> gc.clearRect(0, 0, 1000, 700));  // TIIIMBEEERRRRRR!!!!
+		
+
+		//canvas events
+		canvas.setOnMousePressed(e -> {
+			primX = e.getSceneX();
+			primY = e.getSceneY();
+		});
+
+		canvas.setOnMouseReleased(e -> {
+			finX = e.getSceneX();
+			finY = e.getSceneY();
+			drawShape(gc);
+		});
+
+
+		//structure buttons
+		Pane pane = new Pane();
+		pane.setPadding(new Insets(25, 25, 25, 25));
+
+		btn1.setLayoutX(0);
+		btn1.setLayoutY(0);
+		btn2.setLayoutX(0);
+		btn2.setLayoutY(40);
+		btn3.setLayoutX(0);
+		btn3.setLayoutY(80);
+		btn4.setLayoutX(0);
+		btn4.setLayoutY(120);
+		btn5.setLayoutX(0);
+		btn5.setLayoutY(160);
+		btn6.setLayoutX(0);
+		btn6.setLayoutY(200);
+
+
+		pane.getChildren().add(canvas);
+		pane.getChildren().add(btn1);
+		pane.getChildren().add(btn2);
+		pane.getChildren().add(btn3);
+		pane.getChildren().add(btn4);
+		pane.getChildren().add(btn5);
+		pane.getChildren().add(btn6);
+
+		primaryStage.setScene(new Scene(pane, 1000, 700));
+		primaryStage.show();
+	}
+
+
+	private void drawShape(GraphicsContext gc)
+	{
+		gc.setFill(Color.GREEN);
+		gc.setLineWidth(5);
+		gc.setStroke(Color.BLUE);
+
+		if(filledOval)
+		{
+			if(primX<finX && primY<finY)
+				gc.fillOval(primX, primY, finX - primX, finY - primY);
+			if(primX>finX && primY<finY)
+				gc.fillOval(finX, primY, primX-finX, finY-primY);
+			if(primX<finX && primY>finY)
+				gc.fillOval(primX, finY, finX-primX, primY-finY);
+			if(primX>finX && primY>finY)
+				gc.fillOval(finX, finY, primX-finX, primY-finY);
+		}
+		else if(oval)
+		{
+			if(primX<finX && primY<finY)
+				gc.strokeOval(primX, primY, finX - primX, finY - primY);
+			if(primX>finX && primY<finY)
+				gc.strokeOval(finX, primY, primX-finX, finY-primY);
+			if(primX<finX && primY>finY)
+				gc.strokeOval(primX, finY, finX-primX, primY-finY);
+			if(primX>finX && primY>finY)
+				gc.strokeOval(finX, finY, primX-finX, primY-finY);
+		}
+		else if(filledRectangle)
+		{
+			if(primX<finX && primY<finY)
+				gc.fillRect(primX, primY, finX - primX, finY - primY);
+			if(primX>finX && primY<finY)
+				gc.fillRect(finX, primY, primX-finX, finY-primY);
+			if(primX<finX && primY>finY)
+				gc.fillRect(primX, finY, finX-primX, primY-finY);
+			if(primX>finX && primY>finY)
+				gc.fillRect(finX, finY, primX-finX, primY-finY);
+		}
+		else if (rectangle)
+		{
+			if(primX<finX && primY<finY)
+				gc.strokeRect(primX, primY, finX - primX, finY - primY);
+			if(primX>finX && primY<finY)
+				gc.strokeRect(finX, primY, primX-finX, finY-primY);
+			if(primX<finX && primY>finY)
+				gc.strokeRect(primX, finY, finX-primX, primY-finY);
+			if(primX>finX && primY>finY)
+				gc.strokeRect(finX, finY, primX-finX, primY-finY);
+		}
+		else{
+			gc.strokeLine(primX, primY, finX, finY);
+		}
+
+	}
+}
