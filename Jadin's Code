@@ -7,12 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-
 
 
 public class PaintProgram extends Application {
@@ -23,6 +21,8 @@ public class PaintProgram extends Application {
 	public boolean line;
 
 	public double primX, primY, finX, finY;
+	
+	Image i;
 
 
 	public static void main(String[] args) {
@@ -31,9 +31,6 @@ public class PaintProgram extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-
-
-
 		primaryStage.setTitle("Hello World!");
 
 		//create buttons
@@ -48,7 +45,10 @@ public class PaintProgram extends Application {
 		//create canvas
 		Canvas canvas = new Canvas(1000, 700);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		//drawShape(gc); //this happens on a mouse event
+		gc.setFill(Color.GREEN);
+		gc.setLineWidth(5);
+		gc.setStroke(Color.BLUE);
+
 
 
 		//handle what buttons do
@@ -90,16 +90,26 @@ public class PaintProgram extends Application {
 		});
 		btn6.setOnAction(e -> gc.clearRect(0, 0, 1000, 700));  // TIIIMBEEERRRRRR!!!!
 		
-
+		
 		//canvas events
 		canvas.setOnMousePressed(e -> {
 			primX = e.getSceneX();
 			primY = e.getSceneY();
+			createImage(canvas);			
 		});
 
+		canvas.setOnMouseDragged(e -> {
+			finX = e.getSceneX();
+			finY = e.getSceneY();
+			gc.drawImage(i, 0, 0);
+			drawShape(gc);
+		});
+		
+		
 		canvas.setOnMouseReleased(e -> {
 			finX = e.getSceneX();
 			finY = e.getSceneY();
+			gc.drawImage(i, 0, 0);
 			drawShape(gc);
 		});
 
@@ -122,6 +132,7 @@ public class PaintProgram extends Application {
 		btn6.setLayoutY(200);
 
 
+		//add buttons to pane
 		pane.getChildren().add(canvas);
 		pane.getChildren().add(btn1);
 		pane.getChildren().add(btn2);
@@ -130,6 +141,7 @@ public class PaintProgram extends Application {
 		pane.getChildren().add(btn5);
 		pane.getChildren().add(btn6);
 
+		//create scene from pane
 		primaryStage.setScene(new Scene(pane, 1000, 700));
 		primaryStage.show();
 	}
@@ -137,9 +149,7 @@ public class PaintProgram extends Application {
 
 	private void drawShape(GraphicsContext gc)
 	{
-		gc.setFill(Color.GREEN);
-		gc.setLineWidth(5);
-		gc.setStroke(Color.BLUE);
+		
 
 		if(filledOval)
 		{
@@ -190,4 +200,9 @@ public class PaintProgram extends Application {
 		}
 
 	}
+	public void createImage(Canvas canvas)
+	{
+		i = canvas.snapshot(null, null);
+	}
+	
 }
